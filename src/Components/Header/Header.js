@@ -29,8 +29,16 @@ export default class Header extends Component {
   }
 
   login() {
+    const { username, password } = this.state;
     axios
-    .post('/auth/login', authCtrl.login)
+    .post('/auth/login', { username, password }) //'/auth/register', <----- THIS IS THE req & this is the body---------> { username, password }
+    .then(user => {
+      this.props.updateUser(user.data)
+      this.setState({username: '', password: ''}); // <-- this will clear the input boxes by setting the username and password properties to empty strings using setState  
+    })
+    .catch(err => {
+      alert(err.response.request.response);
+    })
   }
 
   register() {
@@ -38,7 +46,7 @@ export default class Header extends Component {
     axios
       .post('/auth/register', { username, password, isAdmin }) //'/auth/register', <----- THIS IS THE req & this is the body---------> { username, password, isAdmin }
       .then(user => {
-        this.setState({ username: '', password: '' });
+        this.setState({ username: '', password: '' }); // <-- this will clear the input boxes by setting the username and password properties to empty strings using setState
         this.props.updateUser(user.data);
       })
       .catch(err => {
